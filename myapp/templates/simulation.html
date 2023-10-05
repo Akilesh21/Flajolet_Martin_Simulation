@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flajolet-Martin Algorithm Simulation</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        h3 {
+            font-size: 24px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 200px;
+            padding: 10px;
+            margin-left: 10px;
+            border: 2px solid maroon;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: maroon;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        button:hover {
+            background-color: maroon;
+        }
+
+        p {
+            font-size: 20px;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        .check-button {
+            margin-left: 10px;
+        }
+
+        .bottom-button {
+            margin-top: 20px;
+        }
+
+        #hash-function-values {
+            font-size: 20px;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        #hash-function-values p {
+            margin: 5px 0;
+        }
+
+        #hash-function-container {
+            display: flex;
+            align-items: center;
+        }
+
+        #results {
+            font-size: 24px;
+            margin-top: 20px;
+            color: maroon;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flajolet-Martin Algorithm Simulation</h1>
+    
+    <!-- Data Stream Input -->
+    <div class="input-container">
+        <h3>Data Stream:</h3>
+        <input type="text" id="data-stream-input" placeholder="Enter Data Stream">
+    </div>
+    
+    <!-- Convert to Hash Function Button -->
+    <button onclick="convertToHashFunction()" id="convert-button">Convert to Hash Function</button>
+    
+    <!-- Hash Function Input -->
+    <div class="input-container" id="hash-function-container" style="display: none;">
+        <h3>Hash Stream:</h3>
+        <div id="hash-function-values"></div>
+    </div>
+    
+    <!-- Apply and Convert to Binary Button (Initially hidden) -->
+    <div class="input-container" id="apply-button-container" style="display: none;">
+        <button onclick="applyAndConvert()" id="apply-button">Apply and Convert to Binary</button>
+    </div>
+
+    <!-- New Data Stream Input (Initially hidden) -->
+    <div class="input-container" id="new-data-stream-container" style="display: none;">
+        <p id="new-data-stream"></p>
+    </div>
+    
+    <!-- Tail Length Input -->
+    <div class="input-container">
+        <h3>Tail Length:</h3>
+        <input type="number" id="tail-length-input" placeholder="Enter Tail Length">
+        <button onclick="checkTailLength()" class="check-button">Check</button>
+    </div>
+    
+    <!-- Results for Tail Length -->
+    <div class="input-container" id="tail-length-results" style="display: none;">
+    </div>
+    
+    <!-- No of Distinct Elements Input (Placeholder for now) -->
+    
+    <!-- Results will be displayed here -->
+    <div id="results">
+        <!-- Display results here -->
+    </div>
+
+    <script>
+        function convertToHashFunction() {
+            // Get the value from the Data Stream input
+            const dataStreamValue = document.getElementById('data-stream-input').value;
+
+            // Split the space-separated data stream into an array of values
+            const dataStreamArray = dataStreamValue.split(' ');
+
+            // Initialize an array to store hash function values
+            const hashFunctionValues = [];
+
+            // Calculate hash function values for each data stream value (with input validation)
+            for (let i = 0; i < dataStreamArray.length; i++) {
+                const dataStreamItem = parseInt(dataStreamArray[i]);
+                if (!isNaN(dataStreamItem)) {
+                    const hashedValue = hashing(dataStreamItem);
+                    hashFunctionValues.push(hashedValue);
+                }
+            }
+
+            // Show the Hash Function input
+            const hashFunctionContainer = document.getElementById('hash-function-container');
+            hashFunctionContainer.style.display = 'flex';
+
+            // Update the Hash Function input with the calculated values
+            const hashFunctionValuesElement = document.getElementById('hash-function-values');
+            hashFunctionValuesElement.innerHTML = `<p>${hashFunctionValues.join(' ')}</p>`;
+
+            // Hide the "Convert to Hash Function" button
+            const convertButton = document.getElementById('convert-button');
+            convertButton.style.display = 'none';
+
+            // Display the "Apply and Convert to Binary" button
+            const applyButtonContainer = document.getElementById('apply-button-container');
+            applyButtonContainer.style.display = 'block';
+        }
+
+        // Define the hashing function
+        function hashing(x) {
+            const y = (3 * x + 1) % 32;
+            return y;
+        }
+
+        function applyAndConvert() {
+            // Get the value from the Hash Function input
+            const hashFunctionValue = document.getElementById('hash-function-values').textContent;
+
+            // Split the space-separated hash function values into an array
+            const hashFunctionArray = hashFunctionValue.trim().split(' ');
+
+            // Initialize an array to store binary values
+            const binaryValues = [];
+
+            // Calculate binary values for each hash function value (with input validation)
+            for (let i = 0; i < hashFunctionArray.length; i++) {
+                const hashFunctionItem = parseInt(hashFunctionArray[i]);
+                if (!isNaN(hashFunctionItem)) {
+                    // Calculate the binary representation with leading zeros
+                    const binaryValue = (hashFunctionItem >>> 0).toString(2).padStart(5, '0');
+                    binaryValues.push(binaryValue);
+                }
+            }
+
+            // Display the New Data Stream input
+            const newDataStreamContainer = document.getElementById('new-data-stream-container');
+            newDataStreamContainer.style.display = 'flex';
+
+            // Display the result
+            const newDataStreamElement = document.getElementById('new-data-stream');
+            newDataStreamElement.textContent = `Binary Stream: ${binaryValues.join(' ')}`;
+            
+            // Hide the "Apply and Convert to Binary" button
+            const applyButton = document.getElementById('apply-button');
+            applyButton.style.display = 'none';
+        }
+        
+        function checkTailLength() {
+            // Get the value from the Tail Length input
+            const tailLengthValue = parseInt(document.getElementById('tail-length-input').value);
+        
+            // Calculate the user's answer as 2 raised to the power of tailLengthValue
+            const userAnswer = Math.pow(2, tailLengthValue);
+        
+            // Calculate the correct answer based on the maximum tail zero length in the new data stream
+            const maxTailZeroLength = getMaxTailZeroLength();
+            const correctAnswer = Math.pow(2, maxTailZeroLength);
+        
+            // Display the user's answer and the correct answer in a popup message
+            alert(`Your Answer: ${userAnswer}\nCorrect Answer: ${correctAnswer}`);
+        }
+
+        // Function to get the maximum tail zero length from the new data stream
+        function getMaxTailZeroLength() {
+            const binaryDataStream = document.getElementById('new-data-stream').textContent;
+            const binaryValues = binaryDataStream.split(' ');
+            let maxTailZeroLength = 0;
+            for (const binaryValue of binaryValues) {
+                let tailZeroLength = 0;
+                for (let i = binaryValue.length - 1; i >= 0; i--) {
+                    if (binaryValue[i] === '0') {
+                        tailZeroLength++;
+                    } else {
+                        break;
+                    }
+                }
+                if (tailZeroLength > maxTailZeroLength) {
+                    maxTailZeroLength = tailZeroLength;
+                }
+            }
+            return maxTailZeroLength;
+        }
+    </script>
+</body>
+</html>
