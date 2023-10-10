@@ -73,6 +73,40 @@
   button[type="submit"]:hover {
     background-color: #800000; /* Darker shade of maroon red on hover */
   }
+
+  #feedbackModal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 1); /* Set background color to white */
+    z-index: 1000;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  #feedbackModal p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+    color: #333; /* Set text color to black */
+  }
+
+  #okButtonModal {
+    background-color: maroon;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  #okButtonModal:hover {
+    background-color: #800000;
+  }
 </style>
 </head>
 <body>
@@ -89,8 +123,16 @@
   <!-- Procedure Section -->
   <div class="section">
     <div class="section-title">Procedure</div>
-    <div class="section-content">
-      <p>The procedure for this experiment involves...</p>
+    <div class="section-content procedure">
+      <p>The procedure for this experiment involves the following steps:</p>
+      <ol>
+        <li>Prepare the dataset to be analyzed.</li>
+        <li>Apply a hash function to each element to convert them into binary values.</li>
+        <li>Identify the position of the rightmost 1 bit (RMLSB) in the binary representation.</li>
+        <li>Collect a fixed number of RMLSB positions from various hash values.</li>
+        <li>Use "bit shifting" to compensate for bias introduced by the LSB distribution.</li>
+        <li>Execute the algorithm multiple times with different parameters and choose the median estimate.</li>
+      </ol>
     </div>
   </div>
 
@@ -98,7 +140,25 @@
   <div class="section">
     <div class="section-title">Theory</div>
     <div class="section-content">
-      <p>The theoretical background of this experiment is...</p>
+      <p>The Flajolet-Martin Algorithm is a probabilistic technique designed to estimate the cardinality of distinct elements in a massive dataset without the need to process each element individually. The algorithm relies on the observation that the probability distribution of the least significant bit (LSB) of a hash value for a set of data changes as the number of distinct elements increases. Here's a concise overview of the algorithm:
+        <br>
+        <br>Hashing and Bit Representation: For each element in the dataset, apply a hash function to map it to a binary value. Focus on the binary representation of the hash and identify the position of the rightmost 1 bit (RMLSB).
+        <br>
+        <br>Bit Sampling: Collect a fixed number of RMLSB positions from various hash values. These sampled positions provide information about the distribution of trailing zeros and ones in the hash values.
+        <br>
+        <br>Bias Compensation: The algorithm employs a technique called "bit shifting" to counteract the bias introduced by the LSB distribution. This ensures that the estimate remains accurate across a wide range of cardinalities.
+        <br>
+        <br>Iterative Approach: To enhance accuracy, the algorithm can be executed multiple times with different hash functions or hash parameters, and the median estimate is chosen as the final result.
+        <br>
+        <br>Parameter Tuning: The accuracy of the estimate depends on the number of bits considered, the number of hash functions used, and the number of trials. Adjusting these parameters impacts the trade-off between accuracy and computational efficiency.
+        <br>
+        <br>Performance and Scaling: The Flajolet-Martin Algorithm excels when applied to large datasets, as its computational complexity remains relatively low compared to exhaustive counting methods.
+        <br>
+        <br>Limitations: While powerful, the algorithm is probabilistic, and its accuracy varies based on data distribution and parameter selection. It provides approximations rather than exact counts.
+        <br>
+        <br>Applications: The algorithm finds application in scenarios such as network traffic analysis, database management, and estimating unique elements in streaming data, where direct counting is impractical due to the data's scale.
+        <br>
+        <br>In summary, the Flajolet-Martin Algorithm leverages hash functions and bit sampling to estimate the cardinality of distinct elements in a dataset. By capturing the distribution of trailing zeros and ones, and compensating for bias, the algorithm provides a scalable and efficient solution for estimating cardinality in large datasets, making it a valuable tool for various data-related applications.</p>
     </div>
   </div>
 
@@ -106,7 +166,9 @@
   <div class="section">
     <div class="section-title">Simulation</div>
     <div class="section-content">
-      <p>Experience the experiment through our interactive simulation...</p>
+      <p>Experience the experiment through our interactive simulation.</p>
+      <!-- Replace the following URL with the actual URL for the simulation -->
+      <a href="{% url 'simulation' %}">Go to Simulation</a>
     </div>
   </div>
 
@@ -131,12 +193,38 @@
     <div class="section-title">Feedback</div>
     <div class="section-content">
       <p>We value your feedback. Please let us know about your experience.</p>
-      <form>
+      <form id="feedbackForm">
         <label for="feedback">Your Feedback:</label>
         <textarea id="feedback" name="feedback" rows="4"></textarea>
         <button type="submit">Submit</button>
       </form>
     </div>
   </div>
+
+
+  <!-- Feedback Confirmation Modal -->
+  <div id="feedbackModal">
+    <div id="feedbackModalContent">
+      <p>Thank you for your feedback!</p>
+      <button id="okButtonModal">OK</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("feedbackForm").addEventListener("submit", function (e) {
+      e.preventDefault(); // Prevent the default form submission behavior
+
+      // Show the feedback confirmation modal
+      document.getElementById("feedbackModal").style.display = "block";
+    });
+
+    document.getElementById("okButtonModal").addEventListener("click", function () {
+      // Hide the modal
+      document.getElementById("feedbackModal").style.display = "none";
+
+      // Reload the page
+      location.reload();
+    });
+  </script>
 </body>
 </html>
