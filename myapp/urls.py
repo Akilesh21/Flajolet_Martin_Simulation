@@ -5,4 +5,5 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),  # Added a name for the index page
     path('simulation/', views.simulation, name='simulation'),
+    path('feedback/', views.save_feedback, name='save_feedback'),
 ]

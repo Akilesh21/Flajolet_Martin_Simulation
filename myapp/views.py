@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from .forms import DataStreamForm
+from .models import Feedback
 
 # Create your views here.
 def index(request):
@@ -22,4 +23,13 @@ def simulation(request):
         results = None
 
     return render(request, 'simulation.html', {'form': form, 'results': results})
-
+def save_feedback(request):
+    if request.method == 'POST':
+        feedback_text = request.POST.get('feedback')  # Get feedback data from the request
+        if feedback_text:
+            Feedback.objects.create(text=feedback_text)  # Create a Feedback model instance
+            return JsonResponse({'message': 'Feedback submitted successfully'})
+        else:
+            return JsonResponse({'message': 'Feedback is empty'}, status=400)
+    else:
+        return JsonResponse({'message': 'Invalid request method'}, status=400)

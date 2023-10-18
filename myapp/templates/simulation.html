@@ -109,9 +109,9 @@
         <div id="hash-function-values"></div>
     </div>
     
-    <!-- Apply and Convert to Binary Button (Initially hidden) -->
+    <!-- Convert to Binary Button (Initially hidden) -->
     <div class="input-container" id="apply-button-container" style="display: none;">
-        <button onclick="applyAndConvert()" id="apply-button">Apply and Convert to Binary</button>
+        <button onclick="applyAndConvert()" id="apply-button">Convert to Binary</button>
     </div>
 
     <!-- New Data Stream Input (Initially hidden) -->
@@ -122,8 +122,8 @@
     <!-- Tail Length Input -->
     <div class="input-container">
         <h3>No of Distinct Elements:</h3>
-        <input type="number" id="tail-length-input" placeholder="Enter Tail Length">
-        <button onclick="checkTailLength()" class="check-button">Check</button>
+        <input type="number" id="tail-length-input" placeholder="Calculate 2 ^ Tail length">
+        <button onclick="checkTailLength()" class="check-button" id="check-button" disabled>Check</button>
     </div>
     
     <!-- Results for Tail Length -->
@@ -131,44 +131,59 @@
     </div>
     
     <!-- No of Distinct Elements Input (Placeholder for now) -->
-    
     <a href="{% url 'index' %}">Return to Main Page</a>
 
     <script>
         function convertToHashFunction() {
             // Get the value from the Data Stream input
             const dataStreamValue = document.getElementById('data-stream-input').value;
-
+    
+            // Check if the input is empty
+            if (!dataStreamValue.trim()) {
+                alert("Please give the input");
+                return;
+            }
+    
             // Split the space-separated data stream into an array of values
             const dataStreamArray = dataStreamValue.split(' ');
-
+    
             // Initialize an array to store hash function values
             const hashFunctionValues = [];
-
-            // Calculate hash function values for each data stream value (with input validation)
+    
+            // Check for non-integer input
+            const hasNonIntegerInput = dataStreamArray.some(item => isNaN(item));
+    
+            if (hasNonIntegerInput) {
+                alert("Please provide valid input");
+                return;
+            }
+    
+            // Calculate hash function values for each data stream value
             for (let i = 0; i < dataStreamArray.length; i++) {
                 const dataStreamItem = parseInt(dataStreamArray[i]);
-                if (!isNaN(dataStreamItem)) {
-                    const hashedValue = hashing(dataStreamItem);
-                    hashFunctionValues.push(hashedValue);
-                }
+                const hashedValue = hashing(dataStreamItem);
+                hashFunctionValues.push(hashedValue);
             }
-
-            // Show the Hash Function input
-            const hashFunctionContainer = document.getElementById('hash-function-container');
-            hashFunctionContainer.style.display = 'flex';
-
-            // Update the Hash Function input with the calculated values
-            const hashFunctionValuesElement = document.getElementById('hash-function-values');
-            hashFunctionValuesElement.innerHTML = `<p>${hashFunctionValues.join(' ')}</p>`;
-
+    
             // Hide the "Convert to Hash Function" button
             const convertButton = document.getElementById('convert-button');
             convertButton.style.display = 'none';
-
+    
+            // Show the Hash Function input
+            const hashFunctionContainer = document.getElementById('hash-function-container');
+            hashFunctionContainer.style.display = 'flex';
+    
+            // Update the Hash Function input with the calculated values
+            const hashFunctionValuesElement = document.getElementById('hash-function-values');
+            hashFunctionValuesElement.innerHTML = `<p>${hashFunctionValues.join(' ')}</p>`;
+    
             // Display the "Apply and Convert to Binary" button
             const applyButtonContainer = document.getElementById('apply-button-container');
             applyButtonContainer.style.display = 'block';
+    
+            // Enable the "Check" button
+            const checkButton = document.getElementById('check-button');
+            checkButton.disabled = false;
         }
 
         // Define the hashing function
@@ -180,13 +195,13 @@
         function applyAndConvert() {
             // Get the value from the Hash Function input
             const hashFunctionValue = document.getElementById('hash-function-values').textContent;
-
+    
             // Split the space-separated hash function values into an array
             const hashFunctionArray = hashFunctionValue.trim().split(' ');
-
+    
             // Initialize an array to store binary values
             const binaryValues = [];
-
+    
             // Calculate binary values for each hash function value (with input validation)
             for (let i = 0; i < hashFunctionArray.length; i++) {
                 const hashFunctionItem = parseInt(hashFunctionArray[i]);
@@ -196,11 +211,11 @@
                     binaryValues.push(binaryValue);
                 }
             }
-
+    
             // Display the New Data Stream input
             const newDataStreamContainer = document.getElementById('new-data-stream-container');
             newDataStreamContainer.style.display = 'flex';
-
+    
             // Display the result
             const newDataStreamElement = document.getElementById('new-data-stream');
             newDataStreamElement.textContent = `Binary Stream: ${binaryValues.join(' ')}`;
@@ -209,22 +224,18 @@
             const applyButton = document.getElementById('apply-button');
             applyButton.style.display = 'none';
         }
-        
+    
         function checkTailLength() {
             // Get the value from the Tail Length input
             const tailLengthValue = parseInt(document.getElementById('tail-length-input').value);
-        
-            // Calculate the user's answer as 2 raised to the power of tailLengthValue
-            const userAnswer = Math.pow(2, tailLengthValue);
-        
             // Calculate the correct answer based on the maximum tail zero length in the new data stream
             const maxTailZeroLength = getMaxTailZeroLength();
             const correctAnswer = Math.pow(2, maxTailZeroLength);
-        
+    
             // Display the user's answer and the correct answer in a popup message
-            alert(`Your Answer: ${userAnswer}\nCorrect Answer: ${correctAnswer}`);
+            alert(`Your Answer: ${tailLengthValue}\nCorrect Answer: ${correctAnswer}`);
         }
-
+    
         // Function to get the maximum tail zero length from the new data stream
         function getMaxTailZeroLength() {
             const binaryDataStream = document.getElementById('new-data-stream').textContent;

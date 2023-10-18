@@ -1,5 +1,5 @@
 from django import forms
-
+from .models import Feedback
 class DataStreamForm(forms.Form):
     data_stream = forms.IntegerField(label='Data Stream')
     hash_function = forms.IntegerField(label='Hash Function')

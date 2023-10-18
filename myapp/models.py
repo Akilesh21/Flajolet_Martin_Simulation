@@ -1,4 +1,6 @@
 from django.db import models
 
-class StreamElement(models.Model):
-    value = models.IntegerField()
+class Feedback(models.Model):
+    feedback_text = models.TextField()
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    
